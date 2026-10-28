@@ -1,0 +1,373 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Конспект ММО</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: одна колонка ~70ch, липкое оглавление сверху; акцент только на заголовках, ссылках и врезках */
+:root{
+  --bg:#f6f7f5; --fg:#1d2421; --muted:#5b6661; --line:#d9dfdb;
+  --accent:#1f6b57; --accent-soft:#e2efe9; --code-bg:#eceee9; --code-fg:#1d2421;
+  --warn:#8a5a00; --warn-soft:#f6ecd6;
+  --font-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141a18; --fg:#e4e9e6; --muted:#9aa6a0; --line:#2b3531;
+  --accent:#6fcfae; --accent-soft:#1b2c26; --code-bg:#1d2622; --code-fg:#e4e9e6;
+  --warn:#e8bf6a; --warn-soft:#2e2712; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a18; --fg:#e4e9e6; --muted:#9aa6a0; --line:#2b3531;
+  --accent:#6fcfae; --accent-soft:#1b2c26; --code-bg:#1d2622; --code-fg:#e4e9e6;
+  --warn:#e8bf6a; --warn-soft:#2e2712; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.65;
+  padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:760px;margin-inline:auto}
+header{padding-block:40px 20px}
+header p.k{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.15;margin:0 0 12px;text-wrap:balance}
+header p.lead{color:var(--muted);margin:0;max-width:60ch}
+nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-block:1px solid var(--line);
+  padding-block:10px;z-index:5;display:flex;gap:8px 18px;flex-wrap:wrap;font-size:14px}
+nav a{color:var(--accent);text-decoration:none;font-weight:500}
+nav a:hover{text-decoration:underline}
+section{padding-top:44px}
+h2{font-size:26px;line-height:1.25;margin:0 0 6px;text-wrap:balance}
+h2 + .sub{color:var(--muted);margin:0 0 20px}
+h3{font-size:19px;margin:32px 0 8px;text-wrap:balance}
+p{margin:0 0 14px}
+ul,ol{padding-left:22px;margin:0 0 14px}
+li{margin-bottom:6px}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+pre{background:var(--code-bg);color:var(--code-fg);padding:14px 16px;border-radius:6px;overflow-x:auto;
+  margin:0 0 16px;font-size:13.5px;line-height:1.55}
+pre code{background:none;padding:0;font-size:inherit}
+.tip,.warn{padding:12px 16px;border-radius:6px;margin:0 0 16px}
+.tip{background:var(--accent-soft)}
+.warn{background:var(--warn-soft)}
+.tip b,.warn b{display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.tip b{color:var(--accent)} .warn b{color:var(--warn)}
+.tbl{overflow-x:auto;margin:0 0 16px}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500}
+svg{max-width:100%;height:auto;display:block;margin:0 auto 16px}
+svg text{font-family:var(--font-body);fill:var(--fg)}
+.s-line{stroke:var(--line);fill:none}
+.s-acc{stroke:var(--accent);fill:var(--accent-soft)}
+.s-box{stroke:var(--line);fill:var(--code-bg)}
+.s-arrow{stroke:var(--muted);fill:none}
+.s-mut{fill:var(--muted)!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+<header>
+  <p class="k">Методы машинного обучения · 7 семестр</p>
+  <h1>Конспект: от основ ML до ЛР1</h1>
+  <p class="lead">Сначала понятия простыми словами, потом настройка среды и запуск, потом Python, который нужен для первой лабораторной. К каждой теме есть пример.</p>
+</header>
+
+<nav>
+  <a href="#ml">1. Что такое ML</a>
+  <a href="#env">2. Среда и запуск</a>
+  <a href="#py">3. Python для ЛР1</a>
+  <a href="#lr">4. Как устроена ЛР1</a>
+</nav>
+
+<!-- ============ 1 ============ -->
+<section id="ml">
+<h2>1. Что такое ML и вокруг него</h2>
+<p class="sub">Картинка в голове: как эти слова соотносятся друг с другом.</p>
+
+<h3>Вложенность терминов</h3>
+<svg viewBox="0 0 520 250" role="img" aria-label="ИИ включает машинное обучение, которое включает глубокое обучение">
+  <rect x="10" y="10" width="500" height="230" rx="16" class="s-box"/>
+  <text x="26" y="36" font-size="15" font-weight="700">Искусственный интеллект (ИИ)</text>
+  <text x="26" y="54" font-size="12.5" class="s-mut">любая система, которая имитирует «умное» поведение</text>
+  <rect x="50" y="72" width="420" height="152" rx="14" class="s-line" style="fill:var(--bg)"/>
+  <text x="66" y="98" font-size="15" font-weight="700">Машинное обучение (ML)</text>
+  <text x="66" y="116" font-size="12.5" class="s-mut">алгоритм сам находит правила по данным</text>
+  <rect x="100" y="132" width="320" height="76" rx="12" class="s-acc"/>
+  <text x="116" y="158" font-size="15" font-weight="700">Глубокое обучение (DL)</text>
+  <text x="116" y="177" font-size="12.5" class="s-mut">многослойные нейронные сети</text>
+  <text x="116" y="195" font-size="12.5" class="s-mut">картинки, речь, текст</text>
+</svg>
+<p><b>Data Science</b> стоит немного сбоку: это вся работа с данными, от сбора до выводов. ML в ней один из инструментов.</p>
+
+<h3>Главная идея ML</h3>
+<p>В обычном программировании вы пишете правила сами: «если сумма больше 100, то скидка 5%». В ML вы даёте <b>примеры</b>, а правила программа находит сама.</p>
+<div class="tbl"><table>
+<tr><th></th><th>Вход</th><th>Выход</th></tr>
+<tr><td>Обычная программа</td><td>данные + правила</td><td>ответ</td></tr>
+<tr><td>Машинное обучение</td><td>данные + правильные ответы</td><td>правила (модель)</td></tr>
+</table></div>
+<p>Пример. Хотим определять спам. Вместо списка запрещённых слов даём 10 000 писем с пометкой «спам / не спам». Алгоритм выясняет, какие признаки чаще встречаются в спаме. Получившийся набор правил называется <b>моделью</b>.</p>
+
+<h3>Словарь</h3>
+<div class="tbl"><table>
+<tr><th>Термин</th><th>Что значит</th><th>Пример</th></tr>
+<tr><td>Признак (feature)</td><td>Одна характеристика объекта, столбец таблицы</td><td>площадь квартиры, этаж</td></tr>
+<tr><td>Объект / наблюдение</td><td>Одна строка таблицы</td><td>одна квартира</td></tr>
+<tr><td>Целевая переменная (target)</td><td>То, что хотим предсказать</td><td>цена квартиры</td></tr>
+<tr><td>Модель</td><td>Функция «признаки → предсказание» с настроенными параметрами</td><td>цена = 900·площадь + 5000·этаж + …</td></tr>
+<tr><td>Обучение</td><td>Подбор параметров модели по данным</td><td>метод <code>fit</code> в scikit-learn</td></tr>
+<tr><td>Выборка</td><td>Набор объектов. Делят на обучающую (учимся) и тестовую (проверяем)</td><td>80% / 20%</td></tr>
+</table></div>
+
+<h3>Три вида обучения</h3>
+<div class="tbl"><table>
+<tr><th>Вид</th><th>Что есть в данных</th><th>Задачи</th><th>Пример</th></tr>
+<tr><td><b>С учителем</b> (supervised)</td><td>Признаки и правильные ответы</td><td>Классификация (ответ: категория), регрессия (ответ: число)</td><td>Спам или нет. Цена квартиры</td></tr>
+<tr><td><b>Без учителя</b> (unsupervised)</td><td>Только признаки, ответов нет</td><td>Кластеризация, поиск аномалий</td><td>Разбить покупателей на группы по поведению</td></tr>
+<tr><td><b>С подкреплением</b> (reinforcement)</td><td>Агент действует в среде и получает награду или штраф</td><td>Игры, роботы, управление</td><td>Программа учится играть в шахматы, играя сама с собой</td></tr>
+</table></div>
+<div class="tip"><b>Как отличить классификацию от регрессии</b>Если ответ можно перечислить (кошка, собака, спам), это классификация. Если ответ число на шкале (цена, температура), это регрессия.</div>
+
+<h3>Как выглядит проект целиком</h3>
+<svg viewBox="0 0 560 70" role="img" aria-label="Этапы проекта: сбор, очистка, анализ, модель, оценка, внедрение">
+  <defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--muted)"/></marker></defs>
+  <g font-size="12" text-anchor="middle">
+    <rect x="2" y="16" width="80" height="38" rx="6" class="s-box"/><text x="42" y="39">Сбор</text>
+    <rect x="98" y="16" width="80" height="38" rx="6" class="s-box"/><text x="138" y="39">Очистка</text>
+    <rect x="194" y="16" width="80" height="38" rx="6" class="s-box"/><text x="234" y="39">Анализ</text>
+    <rect x="290" y="16" width="80" height="38" rx="6" class="s-acc"/><text x="330" y="39">Модель</text>
+    <rect x="386" y="16" width="80" height="38" rx="6" class="s-box"/><text x="426" y="39">Оценка</text>
+    <rect x="482" y="16" width="76" height="38" rx="6" class="s-box"/><text x="520" y="39">Внедрение</text>
+  </g>
+  <g class="s-arrow" stroke-width="1.5" marker-end="url(#ar)">
+    <line x1="84" y1="35" x2="96" y2="35" marker-end="url(#ar)"/><line x1="180" y1="35" x2="192" y2="35" marker-end="url(#ar)"/>
+    <line x1="276" y1="35" x2="288" y2="35" marker-end="url(#ar)"/><line x1="372" y1="35" x2="384" y2="35" marker-end="url(#ar)"/>
+    <line x1="468" y1="35" x2="480" y2="35" marker-end="url(#ar)"/>
+  </g>
+</svg>
+<p>Модель занимает лишь один шаг из шести. Чаще всего основное время уходит на очистку данных: убрать дубликаты, заполнить пропуски, привести всё к одному формату. Поэтому ЛР2 называется «Разведочный анализ данных».</p>
+
+<h3>Библиотеки Python из лекции</h3>
+<div class="tbl"><table>
+<tr><th>Библиотека</th><th>Для чего</th></tr>
+<tr><td>NumPy</td><td>Быстрые массивы и матрицы, математика над ними</td></tr>
+<tr><td>Pandas</td><td>Таблицы (<code>DataFrame</code>): загрузка, фильтры, группировки</td></tr>
+<tr><td>Matplotlib, Seaborn</td><td>Графики. Seaborn делает то же красивее и короче</td></tr>
+<tr><td>Scikit-learn</td><td>Классические алгоритмы ML, разбиение выборки, метрики</td></tr>
+<tr><td>TensorFlow, Keras, PyTorch</td><td>Нейронные сети. Keras это удобная надстройка над TensorFlow</td></tr>
+<tr><td>Statsmodels</td><td>Статистические тесты и регрессии с подробным отчётом</td></tr>
+<tr><td>NLTK</td><td>Обработка текста</td></tr>
+</table></div>
+<p>Профессии из лекции: data scientist (строит модели и делает выводы), data analyst (отчёты и метрики), data engineer (собирает и хранит данные), ML engineer (выводит модели в работу), DL engineer NLP/CV (нейросети для текста и изображений).</p>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="env">
+<h2>2. Среда: установка и запуск</h2>
+<p class="sub">Windows, PowerShell. У вас уже есть папка <code>mmo/lab1</code> с виртуальным окружением на Python 3.13.</p>
+
+<h3>Из чего состоит среда</h3>
+<ul>
+<li><b>Интерпретатор Python</b>: программа, которая читает и выполняет ваш код.</li>
+<li><b>Виртуальное окружение (venv)</b>: отдельная копия Python с собственными библиотеками для одного проекта. Библиотеки разных проектов не мешают друг другу.</li>
+<li><b>pip</b>: установщик библиотек.</li>
+<li><b>Редактор</b>: PyCharm, VS Code или Spyder. Пишете код и запускаете кнопкой.</li>
+<li><b>Jupyter Notebook / Google Colab</b>: тетрадь из ячеек. Можно запускать код по кусочкам и видеть результат под ячейкой. Colab работает в браузере и ничего не требует ставить.</li>
+</ul>
+
+<h3>Шаги</h3>
+<ol>
+<li>Установите Python с python.org. На первом экране установщика отметьте <b>Add python.exe to PATH</b>.</li>
+<li>Проверьте:
+<pre><code>python --version</code></pre></li>
+<li>Создайте окружение в папке проекта и включите его:
+<pre><code>cd "D:\Study\Term 7\MMO\lab1_v15"
+python -m venv .venv
+.venv\Scripts\Activate.ps1</code></pre>
+В начале строки появится <code>(.venv)</code>, значит окружение активно.</li>
+<li>Поставьте библиотеки (для ЛР1 нужен только сам Python, остальное пригодится с ЛР2):
+<pre><code>pip install numpy pandas matplotlib seaborn scikit-learn jupyter</code></pre></li>
+<li>Запустите программу:
+<pre><code>python part1.py</code></pre></li>
+</ol>
+<div class="warn"><b>Если PowerShell ругается на Activate.ps1</b>Выполните один раз <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> и повторите активацию.</div>
+
+<h3>Запуск из редактора</h3>
+<ul>
+<li><b>PyCharm</b>: File → Open → папка проекта. Settings → Project → Python Interpreter → выберите <code>.venv</code>. Откройте файл и нажмите зелёный треугольник.</li>
+<li><b>VS Code</b>: поставьте расширение Python. Ctrl+Shift+P → «Python: Select Interpreter» → <code>.venv</code>. Запуск кнопкой ▶ справа сверху.</li>
+<li><b>Jupyter</b>: команда <code>jupyter notebook</code> открывает страницу в браузере. Shift+Enter выполняет ячейку.</li>
+</ul>
+<div class="tip"><b>Для скриншотов в отчёт</b>Запускайте в терминале или консоли редактора. Программа с меню ждёт ввода, поэтому делайте скриншот после нескольких пунктов, чтобы в кадре были и ввод, и результат.</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="py">
+<h2>3. Python для ЛР1</h2>
+<p class="sub">Только то, что понадобится в трёх частях задания.</p>
+
+<h3>Переменные и типы</h3>
+<p>Переменная это имя, которое указывает на значение. Тип определяется по значению.</p>
+<div class="tbl"><table>
+<tr><th>Тип</th><th>Пример</th><th>Изменяемый?</th></tr>
+<tr><td><code>int</code>, <code>float</code></td><td><code>15</code>, <code>2.5</code></td><td>нет</td></tr>
+<tr><td><code>str</code> строка</td><td><code>"привет"</code></td><td>нет</td></tr>
+<tr><td><code>list</code> список</td><td><code>[1, 2, 3]</code></td><td><b>да</b></td></tr>
+<tr><td><code>tuple</code> кортеж</td><td><code>(1, 2, 3)</code></td><td>нет</td></tr>
+<tr><td><code>dict</code> словарь</td><td><code>{"a": 1}</code></td><td><b>да</b></td></tr>
+<tr><td><code>set</code> множество</td><td><code>{1, 2, 3}</code></td><td><b>да</b></td></tr>
+</table></div>
+<p>«Неизменяемый» значит, что элемент нельзя заменить на месте. Кортеж это список, который защищён от случайных изменений.</p>
+
+<h3>Ввод, вывод, преобразование</h3>
+<pre><code>text = input("Введите число: ")   # input всегда возвращает строку
+n = int(text)                      # строку в число
+print(f"Вы ввели {n}, квадрат = {n**2}")   # f-строка подставляет значения в {}</code></pre>
+<p>Полезные операции с числами: <code>//</code> целочисленное деление, <code>%</code> остаток, <code>**</code> степень, <code>divmod(a, b)</code> сразу частное и остаток.</p>
+
+<h3>Условия и циклы</h3>
+<pre><code>if x &gt; 0:
+    print("положительное")
+elif x == 0:
+    print("ноль")
+else:
+    print("отрицательное")
+
+for i in range(5):        # 0, 1, 2, 3, 4
+    print(i)
+
+while True:               # бесконечный цикл, выход через break
+    s = input("n - выход: ")
+    if s == "n":
+        break</code></pre>
+<p>Отступ в четыре пробела является частью синтаксиса: он показывает, что находится внутри блока.</p>
+
+<h3>Строки</h3>
+<pre><code>s = "Never look back"
+s.lower(), s.upper()       # регистр
+s.split()                  # ['Never', 'look', 'back']  слова
+s[0], s[-1], s[::-1]       # первая буква, последняя, строка задом наперёд
+"e" in s                   # True
+s.isalpha(), s.isdigit()   # буква ли, цифра ли</code></pre>
+
+<h3>Списки</h3>
+<pre><code>a = [5, 3, 8]
+a.append(1)                # [5, 3, 8, 1]
+a.sort(reverse=True)       # по убыванию
+b = [x for x in a if x &gt; 2]   # генератор списка: фильтр по условию
+len(a), max(a), sum(a)</code></pre>
+
+<h3>Кортежи</h3>
+<pre><code>t = (5, 3, -2, 7)
+t + (1, 2)                 # склеивание даёт новый кортеж
+t.index(max(t))            # номер максимального элемента</code></pre>
+
+<h3>Словари</h3>
+<p>Пары «ключ → значение». Поиск по ключу мгновенный.</p>
+<pre><code>shop = {"кольцо": ["золото", 350.0, 10]}
+shop["кольцо"][2] -= 2         # уменьшить остаток
+for name, (comp, price, qty) in shop.items():
+    print(name, comp, price, qty)
+d1.update(d2)                  # слить d2 в d1
+merged = {**d1, **d2}          # слить в новый словарь</code></pre>
+
+<h3>Функции</h3>
+<pre><code>def area(w, h=1):          # h необязательный, по умолчанию 1
+    return w * h
+
+def merge(*dicts):         # *args принимает сколько угодно аргументов
+    ...</code></pre>
+<p><code>return</code> отдаёт значение наружу. <code>print</code> только показывает его на экране. Это разные вещи, и в частях 2 и 3 задания важно уметь их различать.</p>
+
+<h3>Проверка типа</h3>
+<pre><code>isinstance(x, list)        # True, если x это список
+isinstance(x, (int, float))</code></pre>
+<p>Такая проверка нужна в задании 2 части 2: функция ведёт себя по-разному для списка, словаря, числа и строки.</p>
+
+<h3>Исключения: try / except / else / finally</h3>
+<p>Исключение это ошибка во время работы (деление на ноль, неверный ввод). Без обработки программа падает. С обработкой вы сами решаете, что делать дальше.</p>
+<pre><code>try:
+    n = int(input("Число: "))
+    print(10 / n)
+except ValueError:              # ввели не число
+    print("Нужно целое число")
+except ZeroDivisionError:       # ввели 0
+    print("Делить на ноль нельзя")
+else:                           # исключения не было
+    print("Всё прошло гладко")
+finally:                        # выполнится в любом случае
+    print("Конец блока")</code></pre>
+<p>В <code>finally</code> обычно закрывают файлы и соединения.</p>
+
+<h3>Классы и объекты</h3>
+<p>Класс это чертёж, объект это конкретная вещь по чертежу. Атрибуты хранят данные, методы описывают действия.</p>
+<pre><code>class Account:
+    bank = "БелБанк"                 # атрибут класса, общий для всех
+
+    def __init__(self, owner, balance=0):   # конструктор
+        self.owner = owner                  # атрибуты экземпляра
+        self.balance = balance
+
+    def deposit(self, x):                   # метод экземпляра
+        self.balance += x
+
+    @classmethod
+    def from_string(cls, s):                # метод класса: получает сам класс
+        owner, bal = s.split(";")
+        return cls(owner, float(bal))
+
+    @staticmethod
+    def is_valid(x):                        # статический: не знает ни self, ни cls
+        return x &gt; 0
+
+acc = Account("Иван", 100)
+acc.deposit(50)</code></pre>
+<div class="tbl"><table>
+<tr><th>Вид метода</th><th>Первый параметр</th><th>Когда нужен</th></tr>
+<tr><td>Экземпляра</td><td><code>self</code></td><td>работает с данными конкретного объекта</td></tr>
+<tr><td><code>@classmethod</code></td><td><code>cls</code></td><td>альтернативные конструкторы, работа с атрибутами класса</td></tr>
+<tr><td><code>@staticmethod</code></td><td>нет</td><td>вспомогательная функция, логически связанная с классом</td></tr>
+</table></div>
+
+<h3>Наследование и переопределение</h3>
+<pre><code>class Vehicle:
+    def way_of_moving(self):
+        return "неизвестно"
+
+class Plane(Vehicle):                # Plane наследует всё от Vehicle
+    def way_of_moving(self):         # и переопределяет метод
+        return "по воздуху"</code></pre>
+<p>Вызов <code>way_of_moving()</code> у объекта <code>Plane</code> выполнит версию из <code>Plane</code>. Это полиморфизм: один и тот же вызов, разное поведение.</p>
+
+<h3>Файлы</h3>
+<pre><code>with open("trips.txt", "w", encoding="utf-8") as f:   # "w" запись, "r" чтение
+    f.write("строка\n")</code></pre>
+<p><code>with</code> сам закроет файл, даже если внутри случится ошибка.</p>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="lr">
+<h2>4. Как устроена ЛР1</h2>
+<p class="sub">Вариант 15. Условие в трёх PDF, в каждом по 31 варианту.</p>
+
+<div class="tbl"><table>
+<tr><th>Часть</th><th>Тема</th><th>Задания варианта 15</th></tr>
+<tr><td>1</td><td>Встроенные типы данных</td><td>секунды → д:ч:м:с; числа из строки; гласные и согласные в словах списка; слияние словарей; меню «Ювелирный магазин»; сумма кортежа до первого отрицательного</td></tr>
+<tr><td>2</td><td>Функции и <code>try/except/finally</code></td><td>n-е простое число; функция по типу аргумента; первый полностью отрицательный столбец матрицы; демонстрация исключений</td></tr>
+<tr><td>3</td><td>Классы</td><td>класс List; транспорт с наследованием и записью в файл; площадь стен для обоев; свой класс с тремя видами методов</td></tr>
+</table></div>
+
+<h3>Требования к оформлению отчёта</h3>
+<ol>
+<li>Титульный лист с номером варианта</li>
+<li>Цель работы</li>
+<li>Теория, не больше 4 страниц (этот конспект можно сократить до нужного объёма)</li>
+<li>Формулировка индивидуального задания</li>
+<li>Весь код</li>
+<li>Скриншоты выполнения</li>
+<li>Выводы</li>
+</ol>
+<p>Оформление по стандарту БГУИР СТП 01-2017. Порог по условию: выполнить не менее 60% заданий из каждого документа.</p>
+
+<h3>Что сделано</h3>
+<p>Решены все задания варианта 15 во всех трёх частях, то есть 100%, с запасом над порогом. Код лежит в <code>D:\Study\Term 7\MMO\lab1_v15</code>: <code>part1.py</code>, <code>part2.py</code>, <code>part3.py</code>. Каждый файл запускается командой <code>python имя_файла.py</code>. Перед сдачей стоит прогнать их у себя и сделать скриншоты.</p>
+<div class="warn"><b>Что поправить под преподавателя</b>В части 1 гласными считаются a, e, i, o, u. Если у вас принято считать <code>y</code> гласной, добавьте её в строку <code>vowels</code> в <code>task3</code>. Данные магазина, города и расстояния в задании 2 части 3 придуманы, их можно заменить своими.</div>
+</section>
+</div>
+
+</body></html>
